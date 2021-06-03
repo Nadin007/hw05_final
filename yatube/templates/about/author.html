@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}Об авторе проекта{% endblock %}
+{% block header %}{% endblock %}
+{% block content %}
+{% load user_filters %}
+  <main role="main" class="container">
+    <div class="row">
+      <div class="col-md-3 mb-3 mt-1">
+        <div class="card">
+          <div class="card-body">
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item">
+                <div class="h3"><span style="color:coral">
+                  Об авторе
+                </span>
+                </div> 
+              </li>
+              <li class="list-group-item">
+                <div class="h6 text-muted">
+                  {% load static%}
+                  <img src="{% static 'images/1.JPG' %}" alt = 'Girl'width="100%">
+                  <br><br>
+                  Привет! Приятно познакомится. Меня зовут Надя.
+              </li>
+            </ul>                                               
+          </div>                    
+        </div>                
+      </div>
+      <!-- Тело страницы -->
+      <div class="col-md-9">
+        <div class="card-body">                    
+          <div class="card-text">
+            <h3><span style="color:coral">Буквально в двух словах ...</span></h3>
+            <p>Автор сайта родилась в Республике Беларусь, хотелось бы написать про далекий год, в котором данное событие произошло, но пожалуй не будем.
+            </p>
+            <p>Как и все дети автор ходила в школу, а после школы закончила университет, получив образование в сфере недостаточно интерестной для нее.
+               Проработов какое-то время по специальности автор решает попробавать себя в нашумевшей сфере IT и записывается на курсы "Яндекс-практикум". Выбрав язык програмирования Python автор старательно патается реализовать данный проект (Yatube network). Что будет дальше - покажет только время. </p>
+            </p>
+             <p>Кстати автора зовут Надежда. Ходелась бы написать что автор будущая надежда и звездочка в програмировании, однако честнее было бы сказать что есть маленькая надежда что она сможет осилить финальный проект на данного курса.
+            </p>
+            
+              <div class="list-group list-group-flush">
+                  <div class="h5"><span style="color:coral">
+                    Верный соратник и друг автора.
+                  </span>
+                  </div> 
+              </div>
+                <div class="container">
+                  <div class="card-deck mb-3 text-center">
+                    <div class="card mb-4 shadow-sm">
+                      <div class="card-body">
+                        <h1 class="card-title pricing-card-title">
+                          {% load static%}
+                          <img src="{% static 'images/3.JPG' %}" alt="Dog" width="30%" class="float-left">
+                          <small class="text-muted"><span style="color:rgb(10, 10, 10)">Лучше любого шоколада! </span> </small>
+                        </h1>                                             
+                  
+                      </div>                    
+                    </div>                
+                  </div>            
+                </div>
+          </div>
+        </div>
+      </div>
+    <div> 
+  </main>
+{% endblock %} 

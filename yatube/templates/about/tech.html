@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Об технологиях{% endblock %}
+{% block header %}{% endblock %}
+{% block content %}
+{% load user_filters %}
+  <main role="main" class="container">
+    <div class="row">
+      <!-- Левый вспомогательный блок -->
+       <h1><span style="color:red">
+       Немножко о технологиях
+       </span>
+        </h1> 
+        <h4 class="m-0 text-dark text-center ">
+        Итак, пару слов о технологиях использованных в проектею 
+        </h4>
+      
+      <div class="col-md-9">
+        <div class="card-body">                    
+          <div class="card-text">
+            <p> Вы можете бесконечно угадывать на чем реализовано данное чудо. 
+            </p>
+            <p>Flask? </p>
+            <p>Framer X??</p>
+            <p>Cube.js???</p>
+            <p>Конечно же это данное чудо было реализованно с помощью фреймворка Django
+            </p>
+            <p>Более подробно ознакомится с данным фреймворкам вы можете по ссылкке:
+                <p> Посетите  <a href="https://www.djangoproject.com/">DJANGO WORLD</a></p>
+                
+            </p>
+            </div>                    
+        </div>                
+      </div>            
+    </div>        
+  </main>
+{% endblock %} 
