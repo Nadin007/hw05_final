@@ -6,7 +6,7 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import Client, TestCase
 from django.urls import reverse
 from posts.forms import PostForm
-from posts.models import Group, Post, User
+from posts.models import Group, Post, User, Comment
 
 
 class TestCreateNewPostForm(TestCase):
@@ -124,3 +124,24 @@ class TestCreateNewPostForm(TestCase):
             Post.objects.get(pk=TestCreateNewPostForm.post_check.id).text,
             form_data['text']
         )
+
+    def test_leave_comment(self):
+        '''A valid form creates a comment'''
+        count_comm = Comment.objects.count()
+        response = self.authorized_client.post(
+            reverse('add_comment', kwargs={
+                'username': self.user.username,
+                'post_id': TestCreateNewPostForm.post_check.id
+            }),
+            data={'text': 'Ok!'},
+            Follow=True
+        )
+        self.assertEqual(
+            count_comm + 1, Comment.objects.filter(
+                post_id=TestCreateNewPostForm.post_check.id).count()
+        )
+        self.assertEqual(
+            response.url,
+            f'/{self.user.username}/{TestCreateNewPostForm.post_check.id}/'
+        )
+        self.assertEqual(len(Post.objects.filter(comments__text='Ok!')), 1)

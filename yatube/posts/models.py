@@ -55,5 +55,5 @@ class Follow(models.Model):
         return self.user + self.author
 
     class Meta:
-        constraints = UniqueConstraint(fields=['user', 'author'],
-                                       name='unique_subscription')
+        constraints = [UniqueConstraint(fields=['user', 'author'],
+                                        name='unique_subscription')]
