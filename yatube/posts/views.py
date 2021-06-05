@@ -119,8 +119,6 @@ def add_comment(request, username, post_id):
 
 @login_required
 def follow_index(request):
-    # information about the current user is available in the variable
-    # request.user
     post_list = Post.objects.filter(author__following__user=request.user)
     page = pageproducer(request, post_list, POSTS_PER_PAGE)
     return render(request, "follow.html", {'page': page, 'follow': True,
