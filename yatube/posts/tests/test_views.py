@@ -66,6 +66,12 @@ class PostPagesTest(TestCase):
         self.user = PostPagesTest.author
         self.authorized_client = Client()
         self.authorized_client.force_login(self.user)
+        self.user_2 = User.objects.create_user(username='Lolita')
+        self.user_3 = User.objects.create_user(username='Pikachy')
+        self.authorized_client_2 = Client()
+        self.authorized_client_3 = Client()
+        self.authorized_client_2.force_login(self.user_2)
+        self.authorized_client_3.force_login(self.user_3)
 
     def test_pages_uses_correct_template(self):
         '''URL uses the appropriate template'''
@@ -224,3 +230,18 @@ class PostPagesTest(TestCase):
                 response = self.authorized_client.get(reversed_name)
                 self.assertEqual(len(
                     response.context.get('page').object_list), 10)
+
+    def test_new_post_appears_in_followers_feed(self):
+        """A new user post appears in the feed of those who are subscribed to it
+
+        and does not appear in the feed of those who are not subscribed to it.
+        """
+        self.authorized_client.get(f'/{self.user_2.username}/follow/')
+        self.authorized_client_2.post(
+            reverse('new_post'),
+            data={'text': 'Hello from the other side!'}, follow=True)
+        url = self.authorized_client.get('/follow/')
+        self.assertEqual(url.context['page'][0].text,
+                         'Hello from the other side!')
+        url_2 = self.authorized_client_3.get('/follow/')
+        self.assertEqual(len(url_2.context.get('page').object_list), 0)

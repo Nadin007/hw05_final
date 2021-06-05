@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.db import models
+from django.db.models import UniqueConstraint
 
 User = get_user_model()
 
@@ -49,3 +50,10 @@ class Follow(models.Model):
                              related_name='follower')
     author = models.ForeignKey(User, on_delete=models.CASCADE,
                                related_name='following')
+
+    def __str__(self) -> str:
+        return self.user + self.author
+
+    class Meta:
+        constraints = UniqueConstraint(fields=['user', 'author'],
+                                       name='unique_subscription')

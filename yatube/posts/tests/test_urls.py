@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.test import Client, TestCase
-from posts.models import Group, Post
+from posts.models import Follow, Group, Post
 
 User = get_user_model()
 
@@ -129,3 +129,35 @@ class YatubeURLTests(TestCase):
         """The server returns 404 status code if page doesn't exist."""
         response = self.guest_client.get('/404/')
         self.assertEqual(response.status_code, 404)
+
+    def test_authorized_user_subscribes_on_author(self):
+        """An authorized user can subscribe to other users and delete
+
+        them from subscriptions.
+        """
+        subs_count = Follow.objects.filter(user=self.user).count()
+        sudscribe = self.authorized_client.get(
+            f'/{self.user_2.username}/follow/')
+        self.assertEqual(sudscribe.url, f'/{self.user_2.username}/')
+        assert subs_count + 1 == 1, 'Check that you can follow the user'
+        self.authorized_client.get(f'/{self.user_2.username}/unfollow/')
+        un_sudscribe = Follow.objects.filter(user=self.user).count()
+        assert un_sudscribe == 0, 'Check that you can unfollow the user'
+
+    def test_authorized_user_can_comment_post(self):
+        """An authorized user can leave a comment."""
+        response = self.authorized_client_2.get(
+            f'/{self.user.username}/{self.post_id}/comment/')
+        self.assertEqual(
+            response.url, f'/{self.user.username}/{self.post_id}/')
+
+    def test_unauthorized_user_can_comment_post(self):
+        """An unauthorized user will be redirected to the
+
+        login page if they try to leave a comment.
+        """
+        response = self.guest_client.get(
+            f'/{self.user.username}/{self.post_id}/comment/')
+        self.assertEqual(
+            response.url,
+            f'/auth/login/?next=/{self.user.username}/{self.post_id}/comment/')

@@ -1,6 +1,5 @@
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
-from django.http.response import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 
 from .forms import CommentForm, PostForm
@@ -107,7 +106,7 @@ def add_comment(request, username, post_id):
     author = get_object_or_404(User, pk=request.user.pk)
     post = get_object_or_404(Post, pk=post_id)
     form = CommentForm(
-        request.POST or None, files=request.FILES or None)
+        request.POST or None)
     if request.method == 'POST':
         if form.is_valid():
             new_comm = form.save(commit=False)
@@ -122,11 +121,7 @@ def add_comment(request, username, post_id):
 def follow_index(request):
     # information about the current user is available in the variable
     # request.user
-    follow_list = Follow.objects.filter(user=request.user)
-    author_list = []
-    for follow in follow_list:
-        author_list.append(follow.author)
-    post_list = Post.objects.filter(author__in=author_list)
+    post_list = Post.objects.filter(author__following__user=request.user)
     page = pageproducer(request, post_list, POSTS_PER_PAGE)
     return render(request, "follow.html", {'page': page, 'follow': True,
                                            'all': False, })
@@ -135,25 +130,14 @@ def follow_index(request):
 @login_required
 def profile_follow(request, username):
     author = get_object_or_404(User, username=username)
-    if author == request.user:
-        return HttpResponse(status=200)
-    check_follower = Follow.objects.filter(
-        user=request.user, author=author).exists()
-    if check_follower:
-        return HttpResponse(status=200)
-    Follow(user=request.user, author=author).save()
+    if author != request.user:
+        Follow.objects.get_or_create(user=request.user, author=author)
     return redirect('profile', username=username)
 
 
 @login_required
 def profile_unfollow(request, username):
     author = get_object_or_404(User, username=username)
-    if author == request.user:
-        return HttpResponse(status=200)
-    check_follower = Follow.objects.filter(
-        user=request.user, author=author
-    ).exists()
-    if not check_follower:
-        return HttpResponse(status=200)
-    Follow.objects.get(user=request.user, author=author).delete()
+    if author != request.user:
+        Follow.objects.filter(user=request.user, author=author).delete()
     return redirect('profile', username=username)
