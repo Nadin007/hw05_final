@@ -51,9 +51,9 @@ class Follow(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE,
                                related_name='following')
 
-    def __str__(self) -> str:
-        return self.user + self.author
-
     class Meta:
         constraints = [UniqueConstraint(fields=['user', 'author'],
                                         name='unique_subscription')]
+
+    def __str__(self) -> str:
+        return f"{self.user} follows {self.author}"

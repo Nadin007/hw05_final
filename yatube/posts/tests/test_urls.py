@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.test import Client, TestCase
+
 from posts.models import Follow, Group, Post
 
 User = get_user_model()
@@ -61,21 +62,14 @@ class YatubeURLTests(TestCase):
             self.assertEqual(response.status_code, 200)
 
     def test_url_post_edit_code_status_for_guest_client(self):
-        """The page '/username/post_id/edit/'
-
-        redirects an unauthorized user.
-        """
+        """The page redirects an unauthorized user."""
         response = self.guest_client.get(
             f'/{self.user.username}/{self.post_id}/edit/')
         self.assertEqual(response.status_code, 302)
 
     # Check the availability of pages for an authorized users
     def test_url_for_availability_for_authorized_author(self):
-        """The pages '/username/', '/username/post_id/', '/username/post_id/edit/',
-
-        '/new/', "/", group/<slug:slug>/ are available
-        to an authorized user.
-        """
+        """The pages are available to an authorized user."""
         page_addresses = (f'/{self.user.username}/',
                           f'/{self.user.username}/{self.post_id}/',
                           f'/{self.user.username}/{self.post_id}/edit/',
@@ -87,9 +81,9 @@ class YatubeURLTests(TestCase):
             self.assertEqual(response.status_code, 200)
 
     def test_url_edit_post_for_availability_for_authorized_visitors(self):
-        '''Page '/username/post_id/edit/' redirects the authorized
+        '''Page redirects the authorized user if he/she is not the author
 
-        user if he/she is not the author of the post.
+        of the post.
         '''
         page_adress = f'/{self.user.username}/{self.post_id}/edit/'
         response = self.authorized_client_2.get(page_adress, follow=True)
@@ -97,10 +91,7 @@ class YatubeURLTests(TestCase):
             response, f'/{self.user.username}/{self.post_id}/')
 
     def test_url_edit_post_redirects_unauthorized_visitors(self):
-        '''Page '/username/post_id/edit/' redirects the unauthorized client to
-
-        the  signup page.
-        '''
+        '''Page redirects the unauthorized client to the  signup page.'''
         page_adress = f'/{self.user.username}/{self.post_id}/edit/'
         response = self.guest_client.get(page_adress, follow=True)
         self.assertRedirects(
@@ -131,18 +122,26 @@ class YatubeURLTests(TestCase):
         self.assertEqual(response.status_code, 404)
 
     def test_authorized_user_subscribes_on_author(self):
-        """An authorized user can subscribe to other users and delete
-
-        them from subscriptions.
-        """
+        """An authorized user can subscribe to other users."""
         subs_count = Follow.objects.filter(user=self.user).count()
         sudscribe = self.authorized_client.get(
             f'/{self.user_2.username}/follow/')
+        subs_count_2 = Follow.objects.filter(user=self.user).count()
         self.assertEqual(sudscribe.url, f'/{self.user_2.username}/')
-        assert subs_count + 1 == 1, 'Check that you can follow the user'
+        self.assertEqual(subs_count_2, subs_count + 1,
+                         'Check that you can follow the user')
+
+    def test_authorized_user_unsubscribes_on_author(self):
+        """An authorized user can delete users from subscriptions."""
+        self.authorized_client.get(
+            f'/{self.user_2.username}/follow/')
+        subs_count = User.objects.filter(follower__author=self.user_2).count()
         self.authorized_client.get(f'/{self.user_2.username}/unfollow/')
-        un_sudscribe = Follow.objects.filter(user=self.user).count()
-        assert un_sudscribe == 0, 'Check that you can unfollow the user'
+        un_sudscribe = User.objects.filter(
+            follower__author=self.user_2).count()
+        self.assertEqual(
+            subs_count - 1, un_sudscribe,
+            'Check that you can unfollow the user')
 
     def test_authorized_user_can_comment_post(self):
         """An authorized user can leave a comment."""
@@ -151,7 +150,7 @@ class YatubeURLTests(TestCase):
         self.assertEqual(
             response.url, f'/{self.user.username}/{self.post_id}/')
 
-    def test_unauthorized_user_can_comment_post(self):
+    def test_unauthorized_user_cannt_comment_post(self):
         """An unauthorized user will be redirected to the
 
         login page if they try to leave a comment.
