@@ -5,20 +5,24 @@
               <div class="h2">
                   {{ author.get_full_name }}
               </div>
-              <div class="h3 text-muted">
+              {% load thumbnail %}
+              {% thumbnail author.avatar "160x160" crop="center" upscale=True as im %}
+              <img class="card-img rounded-circle" src="{{ im.url }}">
+              {% endthumbnail %}
+              <div class="h3 text-muted text-center">
                   @{{ author.get_username}}
                </div>
              </div>
              <ul class="list-group list-group-flush">
                <li class="list-group-item">
                  <div class="h6 text-muted">
-                   Подписчиков: {{ followers }} <br />
-                   Подписан: {{ follow }}
+                   Followers: {{ followers }} <br />
+                   Follow: {{ follow }}
                   </div>
                </li>
                <li class="list-group-item">
                   <div class="h6 text-muted">
-                    Записей: {{ post_count }}
+                    Posts: {{ post_count }}
                    </div>
                    {% if user != author %}
                    <li class="list-group-item">
@@ -27,13 +31,13 @@
                       <a
                         class="btn btn-lg btn-light"
                         href="{% url 'profile_unfollow' author.get_username %}" role="button">
-                        Отписаться
+                        Unsubscribe
                       </a>
                     {% else %}
                       <a
                         class="btn btn-lg btn-primary"
                         href="{% url 'profile_follow' author.get_username %}" role="button">
-                        Подписаться
+                        Subscribe
                       </a>
                     {% endif %}
                   {% endif %}

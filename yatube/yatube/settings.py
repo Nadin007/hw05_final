@@ -18,6 +18,8 @@ ALLOWED_HOSTS = [
     "127.0.0.1",
     "[::1]",
     "testserver",
+    'www.awesome.pythonanywhere.com',
+    'awesome.pythonanywhere.com',
 ]
 
 
@@ -35,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.template.context_processors',
     'sorl.thumbnail',
+    'debug_toolbar',
 ]
 
 MIDDLEWARE = [
@@ -45,6 +48,11 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
+]
+
+INTERNAL_IPS = [
+    "127.0.0.1",
 ]
 
 ROOT_URLCONF = 'yatube.urls'
@@ -74,8 +82,12 @@ WSGI_APPLICATION = 'yatube.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'yatube',
+        'USER': 'nadyatumareva',
+        'PASSWORD': 'covid2019',
+        'HOST': 'localhost',
+        'PORT': '',
     }
 }
 
@@ -102,7 +114,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
 
-LANGUAGE_CODE = 'ru'
+LANGUAGE_CODE = 'en'
 
 TIME_ZONE = 'UTC'
 
@@ -125,7 +137,7 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static'), ]
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
+AUTH_USER_MODEL = 'posts.User'
 
 # Login
 

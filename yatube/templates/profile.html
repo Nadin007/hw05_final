@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Последние обновления на сайте{% endblock %}
+{% block title %}The latest updates on the site{% endblock %}
 {% block header %}{% endblock %}
 {% block content %}
 {% load thumbnail %}
@@ -10,7 +10,7 @@
         {% include "user_profile.html" %}
          <div class="col-md-9">
                 {% for post in page %}
-                <!-- Вот он, новый include! -->
+                <!-- new include! -->
                   {% include "post_item.html" with post=post %}
                 {% endfor %}
                 {% include "paginator.html" %}

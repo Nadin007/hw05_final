@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Последние обновления на сайте{% endblock %}
+{% block title %}The latest updates on the site{% endblock %}
 {% block header %}{% endblock %}
 {% block content %}
 
@@ -8,7 +8,7 @@
         {% include "user_profile.html" %}
 
       <div class="col-md-9">
-      <!-- Пост -->
+      <!-- Post -->
       {% include "post_item.html" with post=post %}
         {% include "comments.html" %}
       </div>

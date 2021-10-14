@@ -1,49 +1,54 @@
 <div class="card mb-3 mt-1 shadow-sm">
 
-    <!-- Отображение картинки -->
+    <!-- img -->
     {% load thumbnail %}
     {% thumbnail post.image "960x339" crop="center" upscale=True as im %}
       <img class="card-img" src="{{ im.url }}">
     {% endthumbnail %}
-    <!-- Отображение текста поста -->
+    <!-- text -->
     <div class="card-body">
       <p class="card-text">
-        <!-- Ссылка на автора через @ -->
+        <!-- Link to the author via @ -->
         <a name="post_{{ post.id }}" href="{% url 'profile' post.author.username %}">
-          <strong class="d-block text-gray-dark">@{{ post.author }}</strong>
+          <strong class="d-block text-gray-dark">@{{ post.author.get_username }}</strong>
         </a>
         {{ post.text|linebreaksbr }}
       </p>
   
-      <!-- Если пост относится к какому-нибудь сообществу, то отобразим ссылку на него через # -->
+      <!-- If the post belongs to any group, then we will display a link to it via # -->
       {% if post.group %}
         <a class="card-link muted" href="{% url 'group' post.group.slug %}">
           <strong class="d-block text-gray-dark">#{{ post.group.title }}</strong>
         </a>
       {% endif %}
   
-      <!-- Отображение ссылки на комментарии -->
+      <!-- Show comment link -->
       <div class="d-flex justify-content-between align-items-center">
         <div class="btn-group">
           {% if post.comments.exists %}
             <div>
-              Комментариев: {{ post.comments.count }}
+              Comments: {{ post.comments.count }}
             </div>
           {% endif %}
           <a class="btn btn-sm btn-primary" href="{% url 'post' post.author.username post.id %}" role="button">
-            Добавить комментарий
+            Add comment
           </a>
   
-          <!-- Ссылка на редактирование поста для автора -->
+          <!-- Link to edit the post for the author -->
           {% if user == post.author %}
             <a class="btn btn-sm btn-info" href="{% url 'edit' post.author.username post.id %}" role="button">
-              Редактировать
+              Edit
             </a>
           {% endif %}
         </div>
   
-        <!-- Дата публикации поста -->
+        <!-- post pub date -->
         <small class="text-muted">{{ post.pub_date }}</small>
+      </div>
+      <div class="d-flex justify-content-between align-items-center">
+      <span style="position:absolute;right: 2.7em;">
+      <small class="text-muted">Views {{ post.counter }}</small>
+      </span>
       </div>
     </div>
   </div> 

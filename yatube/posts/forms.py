@@ -1,6 +1,7 @@
+from django import forms
 from django.forms import ModelForm
 
-from .models import Comment, Post
+from .models import Post
 
 
 class PostForm(ModelForm):
@@ -15,11 +16,22 @@ class PostForm(ModelForm):
         }
 
 
-class CommentForm(ModelForm):
+class CommentForm(forms.Form):
+    parent_comment = forms.IntegerField(
+        widget=forms.HiddenInput,
+        required=False
+    )
+    text = forms.CharField(
+        label="Share your opinion about it",
+        widget=forms.Textarea(attrs={'cols': 80, 'rows': 5})
+    )
 
+
+"""
     class Meta:
         model = Comment
-        fields = ('text',)
         labels = {
-            'text': 'Введите текст комментария',
+            'text': 'Share your opinion about it',
         }
+        widgets = {
+            'text': forms.Textarea(attrs={'cols': 80, 'rows': 5})}"""

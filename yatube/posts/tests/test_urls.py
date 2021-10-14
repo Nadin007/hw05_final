@@ -1,7 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.test import Client, TestCase
-
-from posts.models import Follow, Group, Post
+from posts.models import Group, Post
 
 User = get_user_model()
 
@@ -120,28 +119,6 @@ class YatubeURLTests(TestCase):
         """The server returns 404 status code if page doesn't exist."""
         response = self.guest_client.get('/404/')
         self.assertEqual(response.status_code, 404)
-
-    def test_authorized_user_subscribes_on_author(self):
-        """An authorized user can subscribe to other users."""
-        subs_count = Follow.objects.filter(user=self.user).count()
-        sudscribe = self.authorized_client.get(
-            f'/{self.user_2.username}/follow/')
-        subs_count_2 = Follow.objects.filter(user=self.user).count()
-        self.assertEqual(sudscribe.url, f'/{self.user_2.username}/')
-        self.assertEqual(subs_count_2, subs_count + 1,
-                         'Check that you can follow the user')
-
-    def test_authorized_user_unsubscribes_on_author(self):
-        """An authorized user can delete users from subscriptions."""
-        self.authorized_client.get(
-            f'/{self.user_2.username}/follow/')
-        subs_count = User.objects.filter(follower__author=self.user_2).count()
-        self.authorized_client.get(f'/{self.user_2.username}/unfollow/')
-        un_sudscribe = User.objects.filter(
-            follower__author=self.user_2).count()
-        self.assertEqual(
-            subs_count - 1, un_sudscribe,
-            'Check that you can unfollow the user')
 
     def test_authorized_user_can_comment_post(self):
         """An authorized user can leave a comment."""

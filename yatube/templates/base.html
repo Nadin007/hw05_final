@@ -5,20 +5,22 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>{% block title %}The Last Social Media You'll Ever Need{% endblock %} | Yatube</title>
-    <!-- Загрузка статики -->
+    <!-- Loading statics -->
     {% load static %}
     <link rel="stylesheet" href="{% static 'bootstrap/dist/css/bootstrap.min.css' %}">
     <script src="{% static 'jquery/dist/jquery.min.js' %}"></script>
     <script src="{% static 'bootstrap/dist/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'my_js/function.js' %}"></script>
 </head>
 
 <body>
     {% include 'nav.html' %}
+    {% include 'messages.html' %}
     <main>
         <div class="container">
             <h1>{% block header %}The Last Social Media You'll Ever Need{% endblock %}</h1>
             {% block content %}
-            <!-- Содержимое страницы -->
+            <!-- Page content -->
             {% endblock %}
         </div>
     </main>

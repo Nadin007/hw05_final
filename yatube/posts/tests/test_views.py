@@ -9,8 +9,7 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import Client, TestCase
 from django.urls import reverse
 from PIL import Image
-
-from posts.models import Group, Post
+from posts.models import Follow, Group, Post
 
 User = get_user_model()
 
@@ -246,3 +245,25 @@ class PostPagesTest(TestCase):
                          'Hello from the other side!')
         url_2 = self.authorized_client_3.get('/follow/')
         self.assertEqual(len(url_2.context.get('page').object_list), 0)
+
+    def test_authorized_user_subscribes_on_author(self):
+        """An authorized user can subscribe to other users."""
+        subs_count = Follow.objects.filter(user=self.user).count()
+        sudscribe = self.authorized_client.get(
+            f'/{self.user_2.username}/follow/')
+        subs_count_2 = Follow.objects.filter(user=self.user).count()
+        self.assertEqual(sudscribe.url, f'/{self.user_2.username}/')
+        self.assertEqual(subs_count_2, subs_count + 1,
+                         'Check that you can follow the user')
+
+    def test_authorized_user_unsubscribes_on_author(self):
+        """An authorized user can delete users from subscriptions."""
+        self.authorized_client.get(
+            f'/{self.user_2.username}/follow/')
+        subs_count = User.objects.filter(follower__author=self.user_2).count()
+        self.authorized_client.get(f'/{self.user_2.username}/unfollow/')
+        un_sudscribe = User.objects.filter(
+            follower__author=self.user_2).count()
+        self.assertEqual(
+            subs_count - 1, un_sudscribe,
+            'Check that you can unfollow the user')

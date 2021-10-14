@@ -3,9 +3,9 @@
 {% block title %}
 
 {% if post_new %}
-    Новая запись
+    New post
 {% else %}
-    Редактировать запись
+    Edit post
 {% endif %}
 {% endblock %}
 
@@ -17,9 +17,9 @@
     <div class="col-md-8 p-5">
         <div class="card">
             {% if post_new %}
-            <div class="card-header">Новая запись</div>
+            <div class="card-header">New post</div>
             {% else %}
-            <div class="card-header">Редактировать пост</div>
+            <div class="card-header">Edit post</div>
             {% endif %}
             <div class="card-body">
                 <form method="post" enctype="multipart/form-data">
@@ -38,9 +38,12 @@
 
                     <div class="col-md-6 offset-md-4">  
                         {% if post_new %}
-                            <input type="submit" value="Добавить" class="btn btn-primary">
+                            <input type="submit" value="Add" class="btn btn-primary">
                         {% else %}
-                            <input type="submit" value="Сохранить" class="btn btn-primary">
+                            <input type="submit" value="Save" class="btn btn-primary">
+                            <a href="{% url 'delete' user.username  post.id %}" class="btn btn-primary">Delete</button></a>
+                            
+                            
                         {% endif %}     
                     </div>
                 </form>
