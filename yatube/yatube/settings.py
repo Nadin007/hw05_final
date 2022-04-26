@@ -1,30 +1,20 @@
 import os
-import environ
+from distutils.util import strtobool
 
-env = environ.Env()
-environ.Env.read_env()
+import dotenv
 
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+dotenv_file = os.path.join(os.path.dirname(BASE_DIR), ".env")
+if os.path.isfile(dotenv_file):
+    dotenv.load_dotenv(dotenv_file)
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
+SECRET_KEY = os.environ.get('SECRET_KEY', default='SUPffw-HeoKL3-K3Y-F0R-MY-PR0J3CT')
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'yf)97g_m%qhkn=&576%+qklfhn9$adj(k@$rues41$t-x845qn'
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = bool(strtobool(os.environ.get('DEBUG', 'False')))
 
-ALLOWED_HOSTS = [
-    "localhost",
-    "127.0.0.1",
-    "[::1]",
-    "testserver",
-    'www.awesome.pythonanywhere.com',
-    'awesome.pythonanywhere.com',
-]
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '*')
 
 
 # Application definition
